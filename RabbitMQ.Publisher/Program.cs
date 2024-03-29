@@ -10,15 +10,14 @@ using (var connection = factory.CreateConnection())
 {
     var channel = connection.CreateModel();
 
-    var queueName = Constant.QUEUE_NAME;
-    channel.QueueDeclare(queueName, true, false, false);
+    channel.ExchangeDeclare(Constant.EXCHANGE_NAME, durable: true, type: ExchangeType.Fanout);
 
-    Enumerable.Range(1, 2).ToList().ForEach(x =>
+    Enumerable.Range(1, 50).ToList().ForEach(x =>
     {
-        string message = $"Mesaj {x}";
+        string message = $"log {x}";
         var messageBody = Encoding.UTF8.GetBytes(message);
 
-        channel.BasicPublish(string.Empty, queueName, null, messageBody);
+        channel.BasicPublish(Constant.EXCHANGE_NAME, "", null, messageBody);
 
         Console.WriteLine($"Mesaj gönderilmiştir: {message}");
     });
