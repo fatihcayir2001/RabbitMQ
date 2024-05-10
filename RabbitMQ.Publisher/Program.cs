@@ -19,6 +19,7 @@ using (var connection = factory.CreateConnection())
 
     var propertires = channel.CreateBasicProperties();
     propertires.Headers = headers;
+    propertires.Persistent = true; //Mesajlar kalıcı olsun
 
     channel.BasicPublish(Constant.EXCHANGE_NAME_HEADER, string.Empty, propertires, Encoding.UTF8.GetBytes("header-test"));
 
