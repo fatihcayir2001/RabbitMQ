@@ -10,17 +10,13 @@ using (var connection = factory.CreateConnection())
 {
     var channel = connection.CreateModel();
 
-    var randomQueueName = "hello-queue";//channel.QueueDeclare().QueueName;
-
-    var queue = channel.QueueDeclare(randomQueueName, true, false, false);
-
-    channel.QueueBind(randomQueueName, Constant.EXCHANGE_NAME, "", null);
+    var queueName = "direct-queue-Critical";//channel.QueueDeclare().QueueName;
 
     channel.BasicQos(0, 1, false);//Herhangi bir void mesaji, mesajlar birer gelsin, global true ise tek bir seferde tüm subsicribirlera toplam x adet
 
     var consumer = new EventingBasicConsumer(channel);
 
-    channel.BasicConsume(randomQueueName, false,  consumer); //true hemen sil false silme haberdar et, bu true kalinca birden fazla ayağa kalkdıysa gitmiyor ayrı ayrı
+    channel.BasicConsume(queueName, false,  consumer); //true hemen sil false silme haberdar et, bu true kalinca birden fazla ayağa kalkdıysa gitmiyor ayrı ayrı
 
     Console.WriteLine("Loglar bekleniyor");
 
@@ -28,6 +24,9 @@ using (var connection = factory.CreateConnection())
         var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
         Console.WriteLine("Mesaj : " + message);
+
+        File.AppendAllText("log-critical.txt", message + "\n");
+
         channel.BasicAck(e.DeliveryTag, false); //Kuyruktan sil
 
     };
