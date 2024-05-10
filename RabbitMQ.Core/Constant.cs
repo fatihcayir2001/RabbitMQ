@@ -12,5 +12,6 @@ namespace RabbitMQ.Core
         public const string URI = "amqps://xsueigoy:WJGlOt03UN9fCe0omGRVECSxeaROIkDe@stingray.rmq.cloudamqp.com/xsueigoy";
         public const string EXCHANGE_NAME = "logs-fanout";
         public const string EXCHANGE_NAME_DIRECT = "logs-direct";
+        public const string EXCHANGE_NAME_TOPIC = "logs-topic";
     }
 }

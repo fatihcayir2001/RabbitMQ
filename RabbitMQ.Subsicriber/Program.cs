@@ -10,7 +10,12 @@ using (var connection = factory.CreateConnection())
 {
     var channel = connection.CreateModel();
 
-    var queueName = "direct-queue-Critical";//channel.QueueDeclare().QueueName;
+    var queueName = channel.QueueDeclare().QueueName;//channel.QueueDeclare().QueueName;
+
+    //var routeKey = "*.Error.*"; //sql # => % and * is pattern
+    var routeKey = "Information.#"; //sql # => % and # 
+
+    channel.QueueBind(queueName, Constant.EXCHANGE_NAME_TOPIC, routeKey);
 
     channel.BasicQos(0, 1, false);//Herhangi bir void mesaji, mesajlar birer gelsin, global true ise tek bir seferde tüm subsicribirlera toplam x adet
 
@@ -25,7 +30,7 @@ using (var connection = factory.CreateConnection())
 
         Console.WriteLine("Mesaj : " + message);
 
-        File.AppendAllText("log-critical.txt", message + "\n");
+        File.AppendAllText("log-topic.txt", message + "\n");
 
         channel.BasicAck(e.DeliveryTag, false); //Kuyruktan sil
 
