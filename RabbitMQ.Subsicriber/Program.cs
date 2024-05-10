@@ -2,6 +2,7 @@
 using RabbitMQ.Client.Events;
 using RabbitMQ.Core;
 using System.Text;
+using System.Text.Json;
 
 var factory = new ConnectionFactory();
 factory.Uri = new Uri(Constant.URI);
@@ -31,7 +32,9 @@ using (var connection = factory.CreateConnection())
     consumer.Received += (object? sender, BasicDeliverEventArgs e) => {
         var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
-        Console.WriteLine("Mesaj : " + message);
+        var product = JsonSerializer.Deserialize<Product>(message);
+
+        Console.WriteLine($"Stok sayısı {product.Stock}, Ürün Adı: {product.Name}, Ürün Fiyatı: {product.Price}");
         Thread.Sleep(1000);
 
         channel.BasicAck(e.DeliveryTag, false); //Kuyruktan sil
